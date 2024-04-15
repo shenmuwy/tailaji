@@ -31,7 +31,7 @@ function Login() {
             <label htmlFor=''>密码</label>
           </div>
           <button className='btn' onClick={HandleLogin}>
-            submit
+            登录
             <span></span>
             <span></span>
             <span></span>

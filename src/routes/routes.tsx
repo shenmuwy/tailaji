@@ -1,6 +1,8 @@
 import Login from '../pages/login/login'
 import Home from '../pages/home/home'
 import Cpu from '../pages/home/component/cpu'
+import Setting from '@/pages/home/component/setting'
+import Model from '@/pages/home/component/model'
 import { Navigate } from 'react-router-dom'
 
 export const rootRouter = [
@@ -32,7 +34,10 @@ export const rootRouter = [
         element: <Cpu />
       }, {
         path: '/home/setting',
-        element: <div>setting</div>
+        element: <Setting />
+      }, {
+        path: '/home/install',
+        element: <Model />
       }
     ]
   }

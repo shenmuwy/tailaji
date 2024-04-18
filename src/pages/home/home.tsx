@@ -1,22 +1,29 @@
 
 import HeardModel from './component/head.tsx';
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import './home.scss'
 import {
   ContainerOutlined,
   DesktopOutlined,
-  HomeOutlined,
+  HomeOutlined
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import type { FormProps, MenuProps } from 'antd';
+import { Menu, Modal, Input, Form, Button, Flex, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { commonStateType } from '@/interface/store.ts';
+import api from '@/api/api.ts';
 type MenuItem = Required<MenuProps>['items'][number];
 
+type FieldType = {
+  oldPassword?: string;
+  password?: string;
+};
+
 const homePage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isExpande = useSelector((state: { common: commonStateType }) => {
     return state.common.isExpande
   })
@@ -48,6 +55,27 @@ const homePage = () => {
     navigate(prefix + e)
     
   }
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    console.log('Success:', values);
+    const res = await api.getUserModify({
+      oldPsw: values.oldPassword,
+      psw: values.password
+    })
+    if (res.data.code === 200) {
+      message.success('修改成功')
+      setIsModalOpen(false);
+    } else {
+      message.error(res.data.msg)
+    }
+  }
 
   return (
     <div className='homePage'>
@@ -63,9 +91,45 @@ const homePage = () => {
         />
       </div>
       <div className='right-content'>
-        <HeardModel />
+        <HeardModel showModal={showModal} />
         <Outlet />
       </div>
+      <Modal title="修改密码" maskClosable={false} open={isModalOpen} onCancel={handleCancel} footer={null} >
+        <Form
+          name="basic"
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600, paddingTop: 20 }}
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.Item<FieldType>
+            label="原密码"
+            name="oldPassword"
+            rules={[{ required: true, message: '请输入原密码!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item<FieldType>
+            label="新密码"
+            name="password"
+            rules={[{ required: true, message: '请输入新密码!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+            <Flex>
+              <Button onClick={handleCancel}>
+                取消
+              </Button>
+              <Button type="primary" htmlType="submit">
+                确认
+              </Button>
+            </Flex>
+          </Form.Item>
+        </Form>
+      </Modal>
   </div>
   )
 }

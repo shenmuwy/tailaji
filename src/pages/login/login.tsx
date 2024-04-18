@@ -1,16 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import './login.scss'
+import api from '@/api/api';
+import { useDispatch } from 'react-redux'
+import { message } from 'antd';
 
 function Login() {
   
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [userName, setUserName] = useState('admin')
   const [passWord, setPassWord] = useState('123456')
 
-  function HandleLogin() {
+  async function HandleLogin() {
     console.log('你登录了', userName, passWord)
-    navigate('/home')
+    const res = await api.postLogin({
+      name: userName,
+      psw: passWord
+    })
+    if (res.data.code === 200) {
+      dispatch({type:'common/setToken', payload: res.data.data.token})
+      navigate('/home')
+    } else {
+      message.error(res.data.msg)
+    }
   }
   
   return (

@@ -2,24 +2,32 @@ import { Progress, Select, Switch, Button } from 'antd';
 import type { ProgressProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { SyncOutlined, DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import api from '@/api/api';
+import { cpuInfoData } from '@/interface/dataInterFace';
 const cpuPage = () => {
-  const [cpuNum, setCpuNum] = useState(0)
-  const [menNum, setMenNum] = useState(0)
+  const [cpuInfo, setCpuInfo] = useState({} as cpuInfoData)
 
   const twoColors: ProgressProps['strokeColor'] = {
     '0%': 'green',
     '100%': 'red',
   };
 
+  const getCpuMessage = async () =>{
+    const res = await api.getCpuMessage()
+    if (res.data.code === 200) {
+      setCpuInfo(res.data.data)
+    }
+  }
+
   useEffect(() => {
+    getCpuMessage()
     const timer = setInterval(() => {
-      setCpuNum(Math.floor(Math.random() * 100))
-      setMenNum(Math.floor(Math.random() * 100))
+      getCpuMessage()
     }, 3000)
     return () => {
       clearInterval(timer)
     }
-  })
+  }, [])
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -98,23 +106,23 @@ const cpuPage = () => {
         <div className='cpu'>
           <Progress 
             type="dashboard" 
-            percent={cpuNum} 
+            percent={cpuInfo.cpuUsage} 
             strokeColor={twoColors} 
             size={200} 
             format={(percent) => `${percent}%`} 
-            status={cpuNum >=70 ? 'exception' : 'normal'}
+            status={cpuInfo.cpuUsage >=70 ? 'exception' : 'normal'}
           />
-          <div className='name'>CPU核心数： 2 使用率：{cpuNum}%</div>
+          <div className='name'>CPU核心数：{cpuInfo.cpuNum} 使用率：{cpuInfo.cpuUsage}%</div>
         </div>
         <div className='memory'>
           <Progress
             type="dashboard" 
-            percent={menNum} 
+            percent={cpuInfo.memoryUsage} 
             strokeColor={twoColors} 
             size={200} format={(percent) => `${percent}%`} 
-            status={menNum >=70 ? 'exception' : 'normal'}
+            status={cpuInfo.memoryUsage >=70 ? 'exception' : 'normal'}
           />
-          <div className='name'>总内存： 4GB 使用率：{menNum}%</div>
+          <div className='name'>总内存：{cpuInfo.memoryNum} GB 使用率：{cpuInfo.memoryUsage}%</div>
         </div>
       </div>
     </div>

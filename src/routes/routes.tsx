@@ -38,7 +38,13 @@ export const rootRouter = [
       }, {
         path: '/home/install',
         element: <Model />
+      }, {
+        path: '*',
+        element: <div>404,页面丢失了</div>
       }
     ]
+  },{
+    path: '*',
+    element: <div>404,页面丢失了</div>
   }
 ]

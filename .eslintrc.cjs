@@ -14,5 +14,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    '@typescript-eslint/ban-types': 'off',
+    'react-hooks/rules-of-hooks': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
 }

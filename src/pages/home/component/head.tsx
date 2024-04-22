@@ -15,9 +15,8 @@ const headModel = ({showModal}: headProps) => {
   const dispatch = useDispatch()
   
   
-  const isExpande = useSelector((state: { common: commonStateType }) => {
-    return state.common.isExpande
-  })
+  const isExpande = useSelector((state: { common: commonStateType }) => state.common.isExpande)
+  const userAvatar = useSelector((state: { common: commonStateType }) => state.common.userAvatar)
 
   const loginout = () => {
     dispatch({ type: 'common/setToken', payload: '' })
@@ -28,13 +27,21 @@ const headModel = ({showModal}: headProps) => {
     {
       key: '1',
       label: (
-        <div rel="noopener noreferrer" onClick={() => {showModal&&showModal()}}>
+        <div rel="noopener noreferrer" onClick={() => {showModal&&showModal(true)}}>
           修改密码
         </div>
       ),
     },
     {
       key: '2',
+      label: (
+        <div rel="noopener noreferrer" onClick={() => showModal&&showModal(false)}>
+          修改头像
+        </div>
+      ),
+    },
+    {
+      key: '3',
       label: (
         <div rel="noopener noreferrer" onClick={() => loginout()}>
           退出登录
@@ -51,7 +58,7 @@ const headModel = ({showModal}: headProps) => {
         {isExpande ? <MenuUnfoldOutlined /> : <MenuFoldOutlined/>}
       </div>
       <Dropdown menu={{ items }} placement="bottom" arrow className='dropdown'>
-        <img className='img_user' src={img_user} />
+        <img className='img_user' src={userAvatar || img_user} />
       </Dropdown>
     </div>
   )

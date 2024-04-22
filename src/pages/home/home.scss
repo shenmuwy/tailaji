@@ -150,5 +150,38 @@
         }
       }
     }
+  } 
+}
+
+.modify_popup {
+  .ant-modal-body {
+    .user_upload {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .user_img {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      margin: 0 auto;
+      .preview_img {
+        width: 100px;
+      }
+      #img_input {
+        display: none;
+      }
+      .img_label {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .icon-kongtupian svg {
+          fill: #f5f5f5;
+        }
+      }
+    }
   }
 }

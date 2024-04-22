@@ -1,3 +1,4 @@
 export interface commonStateType {
-  isExpande: boolean
+  isExpande: boolean,
+  userAvatar: string
 }

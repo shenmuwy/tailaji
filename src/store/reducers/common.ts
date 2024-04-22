@@ -3,7 +3,8 @@ const counterSlice = createSlice({
   name: 'common',
   initialState: {
     isExpande: false,
-    token: ''
+    token: '',
+    userAvatar: ''
   },
   reducers: {
     setIsExpande: (state, action) => {
@@ -11,6 +12,9 @@ const counterSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload
+    },
+    setUserAvatar: (state, action) => {
+      state.userAvatar = action.payload
     }
   }
 })

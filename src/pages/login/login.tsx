@@ -20,6 +20,7 @@ function Login() {
     })
     if (res.data.code === 200) {
       dispatch({type:'common/setToken', payload: res.data.data.token})
+      dispatch({type:'common/setUserAvatar', payload: res.data.data.img})
       navigate('/home')
     } else {
       message.error(res.data.msg)

@@ -9,6 +9,7 @@ const api = {
     params: {
       ...data
     }
-  })
+  }),
+  uploadImg: (data: any) => request.post('/api/user_upload', data),
 }
 export default api

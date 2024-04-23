@@ -40,6 +40,10 @@ service.interceptors.response.use(
   },
   (err) => {
     console.log(err)
+    if (err.code === 'ERR_NETWORK') {
+      message.error('网络连接失败，请先检查网络')
+    }
+    return Promise.reject(err)
   }
 )
 export default service

@@ -18,5 +18,7 @@ const api = {
       ...data
     }
   }),
+  // 获取世界信息
+  getWorldStatus: () => request.get('/api/world_status'),
 }
 export default api

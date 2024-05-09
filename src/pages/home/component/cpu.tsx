@@ -3,11 +3,13 @@ import type { ProgressProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { SyncOutlined, DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import api from '@/api/api';
-import { cpuInfoData } from '@/interface/dataInterFace';
+import { cpuInfoData, statusDataInterface } from '@/interface/dataInterFace';
 import MaskLayer from '@/component/MaskLayer/MaskLayer';
 const cpuPage = () => {
   const [cpuInfo, setCpuInfo] = useState({} as cpuInfoData)
   const [visible, setVisible] = useState(false)
+  const [statusData, setStatusData] = useState({} as statusDataInterface)
+  const [firstWorld, setFirstWorld] = useState('')
 
   const twoColors: ProgressProps['strokeColor'] = {
     '0%': 'green',
@@ -21,33 +23,56 @@ const cpuPage = () => {
     }
   }
 
+  const worldStatus = async () => {
+    const res = await api.getWorldStatus()
+    if (res.data.code === 200) {
+      setStatusData(res.data.data)
+      console.log(statusData)
+      let name = null
+      if (res.data.data.name) {
+        name = res.data.data.name
+      } else {
+        name = res.data.data.worldsName[0].label
+      }
+      setFirstWorld(name)
+    }
+  }
+
   useEffect(() => {
     getCpuMessage()
+    worldStatus()
     const timer = setInterval(() => {
       getCpuMessage()
-      
     }, 10 * 1000)
     return () => {
       clearInterval(timer)
     }
   }, [])
 
+  useEffect(() => {
+    console.log(firstWorld)
+  }, [firstWorld])
 
-  const handleChange = (value: string) => {
+
+  const handleChange = (value: string, option: any) => {
     console.log(`selected ${value}`);
+    console.log(option)
+    
+    setFirstWorld(option.label)
   }
 
   const startWord = async () => {
     setVisible(true)
-    const status = cpuInfo.worldStatus ? 0 : 1
-    const res = await api.startWorld({status})
+    const status = statusData.status ? 0 : 1
+    const res = await api.startWorld({status, worldName: firstWorld})
     getCpuMessage()
     if (res.data.code === 200) {
-      message.success(cpuInfo.worldStatus?'关闭成功':'开启成功')
+      message.success(statusData.status?'关闭成功':'开启成功')
       setVisible(false)
     } else {
       setVisible(false)
     }
+    worldStatus()
   }
 
   // const onChange = (checked: boolean) => {
@@ -64,18 +89,15 @@ const cpuPage = () => {
             <span className='label'>选择世界：</span>
             <Select
               className='value'
-              defaultValue="世界一"
+              defaultValue={firstWorld}
+              key={firstWorld}
               onChange={handleChange}
-              options={[
-                { value: 'id1', label: '世界一' },
-                { value: 'id2', label: '世界二' },
-                { value: 'id3', label: '世界三' }
-              ]}
+              options={statusData.worldsName}
             />
           </div>
           <div className='open_world item'>
             <span className='label'>开启世界：</span>
-            <Switch style= {{ width: 60}} checked={cpuInfo.worldStatus} checkedChildren="开启" unCheckedChildren="关闭" onChange={startWord} />
+            <Switch style= {{ width: 60}} checked={statusData.status} checkedChildren="开启" unCheckedChildren="关闭" onChange={startWord} />
           </div>
           <div className='item'>
             <span className='label'>快捷操作：</span>

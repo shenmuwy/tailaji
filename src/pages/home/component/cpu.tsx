@@ -1,11 +1,13 @@
-import { Progress, Select, Switch, Button } from 'antd';
+import { Progress, Select, Switch, Button, message } from 'antd';
 import type { ProgressProps } from 'antd';
 import { useEffect, useState } from 'react';
 import { SyncOutlined, DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import api from '@/api/api';
 import { cpuInfoData } from '@/interface/dataInterFace';
+import MaskLayer from '@/component/MaskLayer/MaskLayer';
 const cpuPage = () => {
   const [cpuInfo, setCpuInfo] = useState({} as cpuInfoData)
+  const [visible, setVisible] = useState(false)
 
   const twoColors: ProgressProps['strokeColor'] = {
     '0%': 'green',
@@ -23,15 +25,30 @@ const cpuPage = () => {
     getCpuMessage()
     const timer = setInterval(() => {
       getCpuMessage()
-    }, 3000)
+      
+    }, 10 * 1000)
     return () => {
       clearInterval(timer)
     }
   }, [])
 
+
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
-  };
+  }
+
+  const startWord = async () => {
+    setVisible(true)
+    const status = cpuInfo.worldStatus ? 0 : 1
+    const res = await api.startWorld({status})
+    getCpuMessage()
+    if (res.data.code === 200) {
+      message.success(cpuInfo.worldStatus?'关闭成功':'开启成功')
+      setVisible(false)
+    } else {
+      setVisible(false)
+    }
+  }
 
   // const onChange = (checked: boolean) => {
   //   console.log(`switch to ${checked}`);
@@ -58,7 +75,7 @@ const cpuPage = () => {
           </div>
           <div className='open_world item'>
             <span className='label'>开启世界：</span>
-            <Switch style= {{ width: 60}}checkedChildren="开启" unCheckedChildren="关闭" defaultChecked />
+            <Switch style= {{ width: 60}} checked={cpuInfo.worldStatus} checkedChildren="开启" unCheckedChildren="关闭" onChange={startWord} />
           </div>
           <div className='item'>
             <span className='label'>快捷操作：</span>
@@ -125,6 +142,7 @@ const cpuPage = () => {
           <div className='name'>总内存：{cpuInfo.memoryNum} GB 使用率：{cpuInfo.memoryUsage}%</div>
         </div>
       </div>
+      {visible && <MaskLayer></MaskLayer>}
     </div>
   )
 }

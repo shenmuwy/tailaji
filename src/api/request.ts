@@ -34,6 +34,8 @@ service.interceptors.response.use(
       setTimeout(() =>{
         showMessage=true
       }, 3 * 1000)
+    } else if (res.code === 500) {
+      message.error(res.msg)
     }
     
     return response

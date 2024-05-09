@@ -139,7 +139,7 @@ const homePage = () => {
         <HeardModel showModal={showModal} />
         <Outlet />
       </div>
-      <Modal title="修改密码" maskClosable={false} open={isModalOpen} onCancel={handleCancel} footer={null} wrapClassName="modify_popup">
+      <Modal title={ispassWord ? '修改密码' : '修改头像'} maskClosable={false} open={isModalOpen} onCancel={handleCancel} footer={null} wrapClassName="modify_popup">
         <>{ispassWord ? <Form
           name="basic"
           wrapperCol={{ span: 16 }}

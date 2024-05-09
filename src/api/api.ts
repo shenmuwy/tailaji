@@ -10,6 +10,13 @@ const api = {
       ...data
     }
   }),
+  // 更新头像
   uploadImg: (data: any) => request.post('/api/user_upload', data),
+   // 开启/关闭世界
+   startWorld: (data: any) => request.get('/api/start_world', {
+    params: {
+      ...data
+    }
+  }),
 }
 export default api

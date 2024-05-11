@@ -6,7 +6,6 @@ import {
   Slider,
   Switch,
   Button,
-  Space,
   Row,
   Col
 } from 'antd';
